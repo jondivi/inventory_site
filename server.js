@@ -1,21 +1,36 @@
-console.log("Let's get inventorying things!")
-
 // ========================
 // Requirements for our server
 const express = require('express');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const PORT = 8000;
+require('dotenv').config()
+
+let db,
+    dbConnectionStr=process.env.DB_STRING,
+    dbName = 'INVENTORY-DATABASE'
+
 // ========================
 
 
-MongoClient.connect('mongodb-connection-string', (err, client) => {
+
+// ========================
+// Connection to database
+MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true })
+    .then(client => {
+        console.log(`Connected to the ${dbName}`)
+        db = client.db(dbName)
     
+// ========================
+
  
     // ========================
     // Middlewares
     // ========================
+    app.set('view engine', 'ejs')
+    app.use(express.static('public'))
     app.use(express.urlencoded({ extended: true }))
+    app.use(express.json())
 
     // ========================
 
